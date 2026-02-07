@@ -1,127 +1,207 @@
-# Music Store – Advanced NoSQL Project
+Music Store Project - Final Project for Advanced Databases (NoSQL)
+Project Overview
 
-Course: Advanced Databases (NoSQL)  
-Full-stack web application built with MongoDB, Node.js and a vanilla frontend.
+This project is a web-based music store where users can view products (musical instruments), place orders, and manage their profile. The backend is built using Node.js and MongoDB as the database, with a frontend built using basic HTML, CSS, and JavaScript.
 
----
+Technologies Used:
 
-## Project Overview
+Backend: Node.js, Express.js
 
-Music Store is an online instrument shop system where users can:
-- Register and login
-- Browse musical instruments
-- Create orders
-- View their orders
-- Admin can manage products
-- Perform analytical queries using MongoDB aggregation
+Database: MongoDB
 
-The goal of the project is to demonstrate advanced NoSQL modeling, MongoDB queries, and REST API design.
+Frontend: HTML, CSS, JavaScript
 
----
+Authentication: JWT (JSON Web Token)
 
-## System Architecture
+RESTful API: Exposed for communication between frontend and backend
 
-Frontend (HTML/JS/CSS)  
-→ REST API (Express.js)  
-→ MongoDB (Mongoose ODM)
+Aggregation Framework: For generating statistics such as total revenue and order counts
 
-JWT tokens are used for authentication and role-based authorization.
+Features:
 
----
+User Authentication: Users can sign in using their email and password, and they are assigned roles (user or admin).
 
-## Database Design
+Product Listings: Users can view products (instruments) with their details like name, category, price, and stock.
 
-### Collections
+Create Orders: Logged-in users can add products to their cart and create an order.
 
-#### users
-- _id
-- name
-- email (unique)
-- passwordHash
-- role
+Admin Features: Admin users can view sales statistics and manage products.
 
-#### products
-- _id
-- name
-- category
-- brand
-- price
-- stock
-- description
-- tags[]
-- ratingAvg
-- ratingCount
+Frontend Pages:
 
-Indexes:
-- compound { category, price }
-- text index on name, brand, description
+Login Page: Users can log in to access their account.
 
-#### orders
-- _id
-- userId → users._id
-- items[] (embedded)
-  - productId → products._id
-  - nameSnapshot
-  - priceSnapshot
-  - qty
-- total
-- status
-- createdAt
+Products Page: Users can see a list of products.
 
-Indexes:
-- compound { userId, createdAt }
+Orders Page: Users can view their order history.
 
----
+Create Order Page: Users can place a new order by selecting products.
 
-## Embedded & Referenced Models
+Database Structure
 
-- Orders embed order items
-- Orders reference users and products
-- Snapshot fields preserve historical prices
+The application uses MongoDB with the following collections:
 
----
+Users Collection
 
-## Security
+_id: Unique identifier for the user.
 
-- JWT authentication
-- Authorization middleware
-- Admin role
-- Protected routes
+name: The user's full name.
 
----
+email: User's email (unique).
 
-## Aggregation Pipelines
+passwordHash: Hashed password for security.
 
-Implemented multi-stage pipelines:
-- Total sales statistics
-- Orders summary per user
-- Revenue calculations
+role: User's role (user or admin).
 
-Stages include:
-$match → $group → $unwind → $sort
+Products Collection
 
----
+_id: Unique identifier for the product.
 
-## REST API Endpoints
+name: Name of the product (e.g., "Acoustic Guitar").
 
-### Auth
-POST /auth/login  
-POST /auth/register  
+category: Category of the product (e.g., "guitar", "piano").
 
-### Products
-GET /products  
-GET /products/:id  
-POST /products  
-PATCH /products/:id  
-DELETE /products/:id  
+brand: Brand name (e.g., "Fender").
 
-### Orders
-POST /orders  
-GET /orders/my  
-GET /orders/stats/sales  
+price: Price of the product.
 
----
+stock: Available stock.
 
-## Setup
+description: Detailed description of the product.
 
-### Backend
+tags: Keywords for product filtering (e.g., "beginner", "acoustic").
+
+ratingAvg: Average rating from customers.
+
+ratingCount: Number of ratings.
+
+Orders Collection
+
+_id: Unique order identifier.
+
+userId: The user who placed the order (references the Users collection).
+
+items: Embedded array of products in the order, including product name, price, and quantity.
+
+total: Total price of the order.
+
+status: Order status (e.g., pending, shipped).
+
+createdAt: Date and time the order was placed.
+
+API Endpoints
+
+The backend exposes the following RESTful API endpoints:
+
+Authentication
+
+POST /auth/login: Logs in a user and returns a JWT token.
+
+POST /auth/register: Registers a new user.
+
+Products
+
+GET /products: Retrieves a list of all products.
+
+POST /products: Adds a new product (admin only).
+
+PATCH /products/stock: Updates stock for a product (admin only).
+
+Orders
+
+POST /orders: Creates a new order for the logged-in user.
+
+GET /orders/my: Retrieves the order history for the logged-in user.
+
+GET /orders/stats/sales: Retrieves sales statistics for the admin user.
+
+Admin
+
+GET /admin/stats/sales: Retrieves sales statistics (total revenue and order count) for the admin.
+
+Installation and Setup
+Requirements
+
+Node.js installed on your machine.
+
+MongoDB running locally or a MongoDB Atlas account.
+
+Setup
+
+Clone the repository:
+
+git clone https://github.com/your-username/music-store.git
+
+
+Navigate to the project directory:
+
+cd music-store
+
+
+Install dependencies:
+
+npm install
+
+
+Create a .env file in the root directory and add your environment variables:
+
+JWT_SECRET=your-secret-key
+MONGO_URI=mongodb://localhost:27017/music_store
+PORT=3000
+
+
+Start the backend server:
+
+npm run dev
+
+
+Frontend is available by opening index.html in a browser.
+
+API Documentation
+
+Here are some example API calls:
+
+Login Example
+
+Request:
+
+POST /auth/login
+
+
+Body:
+
+{
+  "email": "test1@mail.com",
+  "password": "123456"
+}
+
+
+Response:
+
+{
+  "token": "your-jwt-token"
+}
+
+MongoDB Aggregation Example
+
+Sales Aggregation Endpoint: /admin/stats/sales
+Example:
+
+Request:
+
+GET /admin/stats/sales
+
+
+Response:
+
+{
+  "totalRevenue": 5000,
+  "ordersCount": 120
+}
+
+
+This example aggregates the total revenue and number of orders.
+
+Conclusion
+
+This project is a simple music store application that allows users to browse products, place orders, and admins to view sales statistics. The application uses MongoDB as the backend database, and MongoDB aggregation pipelines are utilized for advanced data analysis.
