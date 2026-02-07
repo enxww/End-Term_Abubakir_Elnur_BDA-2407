@@ -186,7 +186,7 @@ This API endpoint calculates the total revenue and the number of orders placed b
 1. Clone this repository using the following command:
 
 ```bash
-git clone https://github.com/your-username/music-store.git
+git clone https://github.com/enxww/music-store.git
 ```
 
 2. Install dependencies:
